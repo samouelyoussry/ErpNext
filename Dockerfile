@@ -5,12 +5,9 @@ LABEL author=frappé
 ARG GIT_REPO=https://github.com/frappe/bench.git
 ARG GIT_BRANCH=v5.x
 
-# Create the sources.list if it doesn't exist
-RUN [ -f /etc/apt/sources.list ] || echo "deb http://deb.debian.org/debian bookworm main" > /etc/apt/sources.list
-
-# Use an alternative mirror and add retry logic
-RUN sed -i 's|http://deb.debian.org/debian|http://ftp.us.debian.org/debian|g' /etc/apt/sources.list && \
-    apt-get update || apt-get update --allow-releaseinfo-change && \
+# Use an alternative known reliable mirror
+RUN echo "deb http://deb.debian.org/debian bookworm main" > /etc/apt/sources.list && \
+    apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
     git \
     mariadb-client \
@@ -68,4 +65,4 @@ RUN sed -i 's|http://deb.debian.org/debian|http://ftp.us.debian.org/debian|g' /e
 RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen \
     && dpkg-reconfigure --frontend=noninteractive locales
 
-# The rest of your Dockerfile remains the same
+# The rest of your Dockerfile remains unchanged
